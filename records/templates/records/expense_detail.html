@@ -1,0 +1,10 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+	<h1>Item - {{ expense.place }}<a href="{{ expense.update_details }}" style="font-size:10px">(수정)</a></h1>
+
+  	<p><strong>날짜:</strong> {{ expense.dateinfo }}</p>
+  	<p><strong>구매수단:</strong> {{ expense.way }}</p>
+  	<p><strong>Summary:</strong> {{ expense.summary }}</p>  
+	
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Bar Chart</h1>
+  <p class="mb-4"> 그 동안 지출했던 모든 내역을 영역 별로 나누어 월 별로 나타낸 차트입니다.</p>
+
+  <div>
+    <canvas id="dataset"></canvas>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <tr>
+        <th>이번 달은</th><th>이런 항목으로</th><th>이만큼 쓰고 있어요 단위는 € 예요</th>
+      </tr>
+      {% for query in queryset %}
+      <tr>
+        <td>{{ thismonth }}</td><td>{{ query.sector__name }}</td><td>{{ query.sector__cost }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  {% load static %}
+  <script type="text/javascript" src="{% static 'js/barchart.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base_template.html" %}
+
+
+{% block content %}
+	<!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Chart with Filters</h1>
+  <p class="mb-4"> 필터를 통해 내역을 영역 별로 나타낸 차트입니다.</p>
+
+  <div>
+    <canvas id="dataset"></canvas>
+	</div>
+	
+	<form action="" method="post">
+		{% csrf_token %}
+
+		<div class="form-group">
+			<div style="float: left; width: 15%;">
+				{{ form.period }}
+			</div>
+			<div style="float: left; width: 10%;">
+				{{ form.kind }}
+			</div>
+		</div>
+	
+		<input class="btn btn-primary" type="submit" value="Hit" />
+		
+	</form>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  {% load static %}
+  <script type="text/javascript" src="{% static 'js/barchart.js' %}"></script>
+{% endblock %}
