@@ -128,17 +128,9 @@ def applyFilter(request):
         form = ChartFilterForm(request.POST)
 
         if form.is_valid():
-            print("============>>>>>>>>>>")
-            period = form.cleaned_data["period"]
-            kind = form.cleaned_data["kind"]
-            print("period: {}, kind: {}".format(period, kind))
-
-            return redirect("index")
-        else:
-            print("######################")
+            return render(request, "charts.html", {"form": form})
     else:
         form = ChartFilterForm()
-        # print(request.GET['kind'])
 
     return render(request, "charts.html", {"form": form})
 
@@ -197,7 +189,17 @@ def getDataset(request):
         .order_by("dateinfo__year", "dateinfo__month")
         .annotate(Count("cost"))
     )
-    for query in queryset_cost:
+    # Optimize: Convert to list to execute query once
+    data_sc = list(queryset_sc)
+    data_cost = list(queryset_cost)
+    
+    # Create a lookup dictionary for faster access: {(year, month, sector): cost}
+    cost_map = {}
+    for item in data_sc:
+        key = (item["dateinfo__year"], item["dateinfo__month"], item["sector__name"])
+        cost_map[key] = item["sector__cost"]
+
+    for query in data_cost:
         labels.append("{}-{}".format(query["dateinfo__year"], query["dateinfo__month"]))
 
     for sector in sector_list:
@@ -206,23 +208,104 @@ def getDataset(request):
         item["label"] = sector
         item["backgroundColor"] = sector_color[sector]
 
-        for query in queryset_cost:
-            # print("now checking {} year {} month with sector name {}".format(query['dateinfo__year'],query['dateinfo__month'], sector))
-            if not any(
-                sc["dateinfo__year"] == query["dateinfo__year"]
-                and sc["dateinfo__month"] == query["dateinfo__month"]
-                and sc["sector__name"] == sector
-                for sc in queryset_sc
-            ):
-                item["data"].append(0)
-            else:
-                [
-                    item["data"].append(round(float(sc["sector__cost"]), 2))
-                    for sc in queryset_sc
-                    if sc["dateinfo__year"] == query["dateinfo__year"]
-                    and sc["dateinfo__month"] == query["dateinfo__month"]
-                    and sc["sector__name"] == sector
-                ]
+        for query in data_cost:
+            # O(1) lookup instead of iterating through the list
+            key = (query["dateinfo__year"], query["dateinfo__month"], sector)
+            cost = cost_map.get(key, 0)
+            item["data"].append(round(float(cost), 2) if cost else 0)
+
+        datasets.append(item)
+
+    return JsonResponse(
+        data={
+            "labels": labels,
+            "datasets": datasets,
+        }
+    )
+
+
+def getFilteredDataset(request):
+    """Get dataset with filters applied"""
+    labels = []
+    datasets = []
+    
+    # Get filter parameters
+    period = request.GET.get('period', 'All')
+    kind = request.GET.getlist('kind')
+    
+    # Default to all sectors if no kind specified or '999' (All) is selected
+    if not kind or '999' in kind:
+        target_sectors = Sector.objects.all()
+    else:
+        target_sectors = Sector.objects.filter(id__in=kind)
+        
+    sector_list = [s.name for s in target_sectors]
+    
+    sector_color = {
+        "마켓": "red",
+        "식사": "orange",
+        "여행": "yellow",
+        "고정비": "green",
+        "교육": "skyblue",
+        "병원": "blue",
+        "쇼핑": "purple",
+        "은행(금전)": "black",
+        "주유": "pink",
+        "행정": "gray",
+    }
+    
+    # Base queryset
+    base_query = Expense.objects.all()
+    
+    # Apply period filter
+    today = date.today()
+    if period == 'L3':
+        start_date = today - timedelta(days=90)
+        base_query = base_query.filter(dateinfo__gte=start_date)
+    elif period == 'L6':
+        start_date = today - timedelta(days=180)
+        base_query = base_query.filter(dateinfo__gte=start_date)
+    elif period == 'T':
+        base_query = base_query.filter(dateinfo__year=today.year, dateinfo__month=today.month)
+    # 'All' needs no filter
+    
+    queryset_sc = (
+        base_query.values("dateinfo__year", "dateinfo__month", "sector__name")
+        .order_by("dateinfo__year")
+        .annotate(sector__cost=Sum("cost"))
+    )
+
+    queryset_cost = (
+        base_query.values("dateinfo__year", "dateinfo__month")
+        .order_by("dateinfo__year", "dateinfo__month")
+        .annotate(Count("cost"))
+    )
+    
+    # Optimize: Convert to list to execute query once
+    data_sc = list(queryset_sc)
+    data_cost = list(queryset_cost)
+    
+    # Create a lookup dictionary for faster access: {(year, month, sector): cost}
+    cost_map = {}
+    for item in data_sc:
+        key = (item["dateinfo__year"], item["dateinfo__month"], item["sector__name"])
+        cost_map[key] = item["sector__cost"]
+    
+    for query in data_cost:
+        labels.append("{}-{}".format(query["dateinfo__year"], query["dateinfo__month"]))
+
+    for sector in sector_list:
+        item = {}
+        item["data"] = []
+        item["label"] = sector
+        # Default color if not in map
+        item["backgroundColor"] = sector_color.get(sector, "gray")
+
+        for query in data_cost:
+            # O(1) lookup instead of iterating through the list
+            key = (query["dateinfo__year"], query["dateinfo__month"], sector)
+            cost = cost_map.get(key, 0)
+            item["data"].append(round(float(cost), 2) if cost else 0)
 
         datasets.append(item)
 

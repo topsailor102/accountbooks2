@@ -24,5 +24,8 @@ urlpatterns = [
     path(
         "dashboard/filter/getdataset/", views.getDataset, name="get_dataset_from_filter"
     ),
+    path(
+        "dashboard/filter/getfiltereddataset/", views.getFilteredDataset, name="get_filtered_dataset"
+    ),
     path("currency/", views.currencyTrend, name="currency"),
 ]

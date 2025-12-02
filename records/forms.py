@@ -79,7 +79,7 @@ class ChartFilterForm(forms.Form):
     def __init__(self, *arg, **kwargs):
         super(ChartFilterForm, self).__init__(*arg, **kwargs)
         self.fields["kind"].choices = get_choice1()
-        self.fields["kind"].widget.attrs["size"] = "11"
+        # self.fields["kind"].widget.attrs["size"] = "11"
         self.fields["kind"].initial = [
             "999",
         ]

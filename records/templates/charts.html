@@ -2,32 +2,35 @@
 
 
 {% block content %}
-	<!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">Chart with Filters</h1>
-  <p class="mb-4"> 필터를 통해 내역을 영역 별로 나타낸 차트입니다.</p>
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Chart with Filters</h1>
+<p class="mb-4"> 필터를 통해 내역을 영역 별로 나타낸 차트입니다.</p>
 
-  <div>
-    <canvas id="dataset"></canvas>
-	</div>
-	
-	<form action="" method="post">
-		{% csrf_token %}
+<form id="filterForm" action="" method="post" class="mb-4">
+	{% csrf_token %}
 
-		<div class="form-group">
-			<div style="float: left; width: 15%;">
-				{{ form.period }}
-			</div>
-			<div style="float: left; width: 10%;">
-				{{ form.kind }}
-			</div>
+	<div class="form-row align-items-center">
+		<div class="col-auto">
+			{{ form.period }}
 		</div>
-	
-		<input class="btn btn-primary" type="submit" value="Hit" />
-		
-	</form>
+		<div class="col-auto">
+			{{ form.kind }}
+		</div>
+		<div class="col-auto">
+			<input class="btn btn-primary" type="submit" value="Hit" />
+		</div>
+	</div>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-  {% load static %}
-  <script type="text/javascript" src="{% static 'js/barchart.js' %}"></script>
+</form>
+
+<div>
+	<canvas id="dataset"></canvas>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% load static %}
+<script type="text/javascript" src="{% static 'js/barchart.js' %}?v={% now 'U' %}"></script>
 {% endblock %}
