@@ -1,32 +1,35 @@
 {% extends "base_template.html" %}
 
-
 {% block content %}
-<!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Chart with Filters</h1>
-<p class="mb-4"> 필터를 통해 내역을 영역 별로 나타낸 차트입니다.</p>
-
-<form id="filterForm" action="" method="post" class="mb-4">
-	{% csrf_token %}
-
-	<div class="form-row align-items-center">
-		<div class="col-auto">
-			{{ form.period }}
-		</div>
-		<div class="col-auto">
-			{{ form.kind }}
-		</div>
-		<div class="col-auto">
-			<input class="btn btn-primary" type="submit" value="Hit" />
-		</div>
-	</div>
-
-</form>
-
-<div>
-	<canvas id="dataset"></canvas>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+    <div>
+        <h1 class="page-title">Chart with Filters</h1>
+        <p class="page-subtitle" style="margin-bottom:0;">필터를 통해 내역을 영역 별로 나타낸 차트입니다.</p>
+    </div>
 </div>
 
+<div class="glass-card" style="margin-bottom: 2rem; background-color: rgba(255, 255, 255, 0.5);">
+    <form id="filterForm" action="" method="post" class="modern-form" style="display:flex; gap:1.5rem; align-items:flex-end; flex-wrap:wrap; margin:0;">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
+            <label class="form-label" style="font-size:0.75rem; color:var(--text-light); text-transform:uppercase;">Period</label>
+            {{ form.period }}
+        </div>
+        <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
+            <label class="form-label" style="font-size:0.75rem; color:var(--text-light); text-transform:uppercase;">Category</label>
+            {{ form.kind }}
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <button class="btn btn-primary" type="submit" style="height: 42px; padding: 0 2rem;"><i class="fas fa-search" style="margin-right:0.5rem;"></i> Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="glass-card">
+    <div style="position: relative; width:100%">
+        <canvas id="dataset"></canvas>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

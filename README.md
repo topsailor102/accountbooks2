@@ -56,6 +56,16 @@ python manage.py runserver 0.0.0.0:8123
 - 대시보드 및 차트 시각화
 - 사용자 인증 (로그인/로그아웃)
 
+## UI (프론트엔드) 아키텍처
+
+이 가계부 앱은 Bootstrap과 같은 무거운 외부 프레임워크에 의존하지 않고, 독자적인 **순수 모던 CSS(Vanilla CSS)** 디자인 시스템 기반으로 작성되었습니다.
+
+- **스타일 시트**: `records/static/css/main.css`
+- **주요 특징**:
+  - CSS 변수(`:root`)를 활용한 일관된 컬러 팔레트 및 타이포그래피(Inter 폰트 등) 통제
+  - 글래스모피즘(Glassmorphism) 등 최신 트렌드가 반영된 UI 카드 컴포넌트(`glass-card`)
+  - CSS Flexbox 및 Grid를 이용한 직관적인 시맨틱(Semantic) 반응형 레이아웃
+
 ## 보안 주의사항
 
 ⚠️ **중요**: `secrets.json` 파일은 절대 Git에 커밋하지 마세요!

@@ -1,70 +1,62 @@
 {% extends "base_template.html" %}
 
 {% block content %}
-<h1>Account Book Home</h1>
-<p>Welcome to the AccoutBook developed by <em>SeungSeungPapa</em> !!</p>
-<!-- <h2>Dynamic Design</h2> -->
-<p>It shows the following record counts:</p>
-<ul>
-	<li><strong>Expenses:</strong> {{ num_expense }}</li>
-	<li><strong>Payments:</strong> {{ num_ways }}</li>
-	<li><strong>Sectors for expenses:</strong> {{ num_sectors }}</li>
-</ul>
+<div class="mb-4">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Welcome to the AccountBook developed by <em>SeungSeungPapa</em></p>
+</div>
 
-<p> You have visited this page {{num_visits}}{% if num_visites == 1 %} time{% else %} times{% endif %}.</p>
+<!-- Quick Stats Summary -->
+<div class="glass-card mb-4" style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; text-align:center;">
+    <div style="padding:1rem;">
+        <div style="font-size:2rem; font-weight:700; color:var(--primary);">{{ num_expense }}</div>
+        <div style="font-size:0.875rem; color:var(--text-muted); font-weight:500;">Total Expenses</div>
+    </div>
+    <div style="width:1px; height:50px; background-color:var(--border-color);"></div>
+    <div style="padding:1rem;">
+        <div style="font-size:2rem; font-weight:700; color:var(--success);">{{ num_ways }}</div>
+        <div style="font-size:0.875rem; color:var(--text-muted); font-weight:500;">Payment Methods</div>
+    </div>
+    <div style="width:1px; height:50px; background-color:var(--border-color);"></div>
+    <div style="padding:1rem;">
+        <div style="font-size:2rem; font-weight:700; color:var(--warning);">{{ num_sectors }}</div>
+        <div style="font-size:0.875rem; color:var(--text-muted); font-weight:500;">Categories</div>
+    </div>
+</div>
 
-<!-- Content Row -->
-<div class="row">
-
-	<!-- Earnings (Monthly) Card Example -->
-	<div class="col-xl-3 col-md-6 mb-4">
-		<div class="card border-left-primary shadow h-100 py-2">
-			<div class="card-body">
-				<div class="row no-gutters align-items-center">
-					<div class="col mr-2">
-						<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Spending (Monthly)</div>
-						<div class="h5 mb-0 font-weight-bold text-gray-800">€{{ monthly_spending|floatformat:2 }}</div>
-					</div>
-					<div class="col-auto">
-						<i class="fas fa-calendar fa-2x text-gray-300"></i>
-					</div>
-				</div>
-			</div>
+<div class="grid-cards">
+	<!-- Monthly Spending -->
+	<div class="glass-card stat-card">
+		<div>
+			<div class="stat-label">Spending (Monthly)</div>
+			<div class="stat-value">€{{ monthly_spending|floatformat:2 }}</div>
+		</div>
+		<div class="stat-icon primary">
+			<i class="fas fa-calendar"></i>
 		</div>
 	</div>
 
-	<!-- Earnings (Monthly) Card Example -->
-	<div class="col-xl-3 col-md-6 mb-4">
-		<div class="card border-left-success shadow h-100 py-2">
-			<div class="card-body">
-				<div class="row no-gutters align-items-center">
-					<div class="col mr-2">
-						<div class="text-xs font-weight-bold text-success text-uppercase mb-1">Spending (Annual)</div>
-						<div class="h5 mb-0 font-weight-bold text-gray-800">€{{ annual_spending|floatformat:2 }}</div>
-					</div>
-					<div class="col-auto">
-						<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-					</div>
-				</div>
-			</div>
+	<!-- Annual Spending -->
+	<div class="glass-card stat-card">
+		<div>
+			<div class="stat-label">Spending (Annual)</div>
+			<div class="stat-value">€{{ annual_spending|floatformat:2 }}</div>
+		</div>
+		<div class="stat-icon success">
+			<i class="fas fa-dollar-sign"></i>
 		</div>
 	</div>
 
-	<!-- Earnings (Monthly) Card Example -->
-	<div class="col-xl-3 col-md-6 mb-4">
-		<div class="card border-left-info shadow h-100 py-2">
-			<div class="card-body">
-				<div class="row no-gutters align-items-center">
-					<div class="col mr-2">
-						<div class="text-xs font-weight-bold text-info text-uppercase mb-1">등록건수 (Monthly)</div>
-						<div class="h5 mb-0 font-weight-bold text-gray-800">{{ monthly_expense_count }} 건</div>
-					</div>
-					<div class="col-auto">
-						<i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-					</div>
-				</div>
-			</div>
+	<!-- Monthly Count -->
+	<div class="glass-card stat-card">
+		<div>
+			<div class="stat-label">등록건수 (Monthly)</div>
+			<div class="stat-value">{{ monthly_expense_count }} 건</div>
+		</div>
+		<div class="stat-icon info">
+			<i class="fas fa-clipboard-list"></i>
 		</div>
 	</div>
+</div>
 
-	{% endblock %}
+{% endblock %}
