@@ -174,8 +174,9 @@ def getDataset(request):
     }
     sector_list = ["마켓", "식사", "여행", "고정비", "교육", "병원", "쇼핑", "은행(금전)", "주유", "행정"]
 
+    valid_expenses = Expense.objects.filter(dateinfo__isnull=False)
     queryset_sc = (
-        Expense.objects.values("dateinfo__year", "dateinfo__month", "sector__name")
+        valid_expenses.values("dateinfo__year", "dateinfo__month", "sector__name")
         .order_by("dateinfo__year")
         .annotate(sector__cost=Sum("cost"))
     )
@@ -185,7 +186,7 @@ def getDataset(request):
     """
 
     queryset_cost = (
-        Expense.objects.values("dateinfo__year", "dateinfo__month")
+        valid_expenses.values("dateinfo__year", "dateinfo__month")
         .order_by("dateinfo__year", "dateinfo__month")
         .annotate(Count("cost"))
     )
@@ -254,8 +255,8 @@ def getFilteredDataset(request):
         "행정": "gray",
     }
     
-    # Base queryset
-    base_query = Expense.objects.all()
+    # Base queryset (필터링된 분류와, 날짜가 비어있지 않은 데이터로 한정)
+    base_query = Expense.objects.filter(sector__in=target_sectors, dateinfo__isnull=False)
     
     # Apply period filter
     today = date.today()

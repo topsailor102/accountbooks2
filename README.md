@@ -61,3 +61,23 @@ python manage.py runserver 0.0.0.0:8123
 ⚠️ **중요**: `secrets.json` 파일은 절대 Git에 커밋하지 마세요!
 - 이 파일은 `.gitignore`에 포함되어 있습니다.
 - 대신 `secrets.json.example` 파일을 참고하여 각 환경에서 생성하세요.
+
+## 데이터베이스 연결 최적화 (성능 향상 방안)
+
+이 프로젝트는 접속 시 발생하는 속도 지연(오버헤드 및 Hang)을 방지하기 위해 다음 두 가지 설정을 적극 권장합니다.
+
+### 1. Django `CONN_MAX_AGE` 설정 (Connection Pooling)
+장고는 매 요청마다 데이터베이스에 새롭게 접속하는 데 엄청난 시간을 소모합니다. 연결을 유지하고 재사용하기 위해, `secrets.json`의 `DATABASE` 설정에 `"CONN_MAX_AGE": 60` (초 단위)을 추가합니다.
+
+### 2. Synology MariaDB `skip-name-resolve` 설정 (DNS 역참조 대기 방지)
+데이터베이스 서버가 접속을 받을 때마다 DNS 이름을 확인하느라 멈추는 현상을 방지합니다. 
+시놀로지 기반 MariaDB 10 패키지의 경우 기본 설정 파일이 읽기 전용이므로, 다음 과정을 거쳐 커스텀 설정을 오버라이드합니다:
+
+1. NAS에 관리자 권한으로 터미널(SSH) 접속
+2. `sudo vi /var/packages/MariaDB10/etc/my.cnf` 입력
+3. `[mysqld]` 와 그 아래에 `skip-name-resolve` 내용 추가 후 저장 (`:wq`):
+   ```ini
+   [mysqld]
+   skip-name-resolve
+   ```
+4. 시놀로지의 패키지 센터에서 **MariaDB 10** 앱을 [중지]한 뒤 다시 [실행]하여 적용 완료
