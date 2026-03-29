@@ -108,4 +108,8 @@ class ExpenseForm(forms.ModelForm):
         # Set default summary text
         if not self.instance.pk and not self.initial.get('summary'):
             self.fields['summary'].initial = "Describe the details or keyword for spending"
+            
+        # Exclude 'ING' from payment methods as requested
+        if 'way' in self.fields:
+            self.fields['way'].queryset = Way.objects.exclude(name='ING')
 
