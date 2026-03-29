@@ -16,38 +16,60 @@ function barchart(filterData) {
     type: 'get',
     url: url,
     data: data,
-    success: function (data) {
-
-      ctx = 'dataset';
-
+    success: function (resData) {
       if (myChart) {
         myChart.destroy();
       }
 
+      var ctx = document.getElementById('dataset').getContext('2d');
+
       myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: data.labels, datasets: data.datasets,
+          labels: resData.labels,
+          datasets: resData.datasets,
         },
         options: {
           responsive: true,
-          legend: {
-            position: 'bottom',
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { family: 'Inter', size: 12 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) { label += ': '; }
+                  if (context.parsed.y !== null) { 
+                    label += '€' + context.parsed.y.toLocaleString();
+                  }
+                  return label;
+                }
+              }
+            }
           },
           scales: {
-            xAxes: [{
+            x: {
               stacked: true,
-              gridLines: {
+              grid: {
                 display: false,
-              }
-            }],
-            yAxes: [{
-              stacked: true,
-              ticks: {
-                beginAtZero: true,
               },
-              type: 'linear',
-            }]
+              ticks: {
+                 font: { family: 'Inter' }
+              }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: {
+                 font: { family: 'Inter' },
+                 callback: function(value) { return '€' + value; }
+              }
+            }
           },
         }
       });

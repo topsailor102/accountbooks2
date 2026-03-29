@@ -65,6 +65,7 @@ python manage.py runserver 0.0.0.0:8123
   - CSS 변수(`:root`)를 활용한 일관된 컬러 팔레트 및 타이포그래피(Inter 폰트 등) 통제
   - 글래스모피즘(Glassmorphism) 등 최신 트렌드가 반영된 UI 카드 컴포넌트(`glass-card`)
   - CSS Flexbox 및 Grid를 이용한 직관적인 시맨틱(Semantic) 반응형 레이아웃
+  - **데이터 시각화 (Chart.js 최신화)**: 구형 v2 엔진 대신 성능이 향상되고 모듈화가 잘 된 **Chart.js 최고버전(v4)**으로 고도화 마이그레이션을 적용하여, 사용자가 시각적으로 편안함을 느끼는 캔버스(Canvas) UI 형식을 안정적으로 유지.
 
 ## 보안 주의사항
 
@@ -91,3 +92,11 @@ python manage.py runserver 0.0.0.0:8123
    skip-name-resolve
    ```
 4. 시놀로지의 패키지 센터에서 **MariaDB 10** 앱을 [중지]한 뒤 다시 [실행]하여 적용 완료
+
+## 최근 변경 이력 (Changelog)
+
+- **UI 프론트엔드 모던화**: 기존 Bootstrap 및 SB Admin 2 테마를 완전 제거하고 `main.css` 기반의 Vanilla CSS와 글래스모피즘(Glassmorphism) 테마로 마이그레이션.
+- **결제수단 선택지(Way) 튜닝**: 사용하지 않는 결제 수단('ING') 항목을 과거 데이터 삭제 없이 지출 입력 폼(ExpenseForm)의 드롭다운 목록에서만 보이지 않도록 제외(Exclude) 처리.
+- **데이터 시각화 업그레이드 및 레이아웃 픽스**: 
+  - Chart.js 무거운 구버전(v2.9)을 최신 렌더링 엔진인 Chart.js v4로 롤백 및 업그레이드. 
+  - Chart.js 최신 버전에 반응형 크기(`maintainAspectRatio: false`)를 적용할 경우 Y축 높이가 찌그러지는 버그를 해결하기 위해, 모든 캔버스 부모 레이아웃 컨테이너에 `height: 400px`를 부여하는 스타일 픽스 적용 완료.
