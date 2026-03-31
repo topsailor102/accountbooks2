@@ -80,6 +80,7 @@ ul {
     z-index: 100;
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -140,6 +141,8 @@ ul {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-width: 0; /* Ensures inner charts shrink properly */
+    transition: margin-left 0.3s ease;
 }
 
 /* Topbar */
@@ -173,6 +176,7 @@ ul {
 .content-container {
     padding: 2rem;
     flex: 1;
+    min-width: 0; /* Ensures flex container allows shrinking */
 }
 
 /* Components */
@@ -196,6 +200,7 @@ ul {
     border: 1px solid var(--border-color);
     padding: 1.5rem;
     transition: var(--transition);
+    min-width: 0; /* Fixes ChartJS canvas shrinking bugs */
 }
 
 .glass-card:hover {
@@ -365,3 +370,42 @@ textarea:focus {
     font-weight: 600;
 }
 .badge-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+/* Responsive Media Queries */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+    }
+    .app-sidebar.show {
+        transform: translateX(0);
+        box-shadow: var(--shadow-lg);
+    }
+    .app-main {
+        margin-left: 0;
+    }
+    .mobile-menu-btn {
+        display: block;
+    }
+    .d-none-mobile {
+        display: none !important;
+    }
+    .content-container {
+        padding: 1rem;
+    }
+    .grid-cards {
+        grid-template-columns: 1fr;
+    }
+    .stat-card {
+        flex-direction: row;
+    }
+}
