@@ -89,7 +89,7 @@ class ExpenseCreate(CreateView):
 
 class ExpenseUpdate(UpdateView):
     model = Expense
-    fields = ["dateinfo", "place", "cost", "way", "sector"]
+    form_class = ExpenseForm
 
 
 class ExpenseDelete(DeleteView):
